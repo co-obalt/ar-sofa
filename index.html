@@ -460,6 +460,103 @@
     .ar-status-bar.visible { opacity: 1; }
 
     /* ============================================================
+       AR PLACEMENT PROMPT
+       Shown via slot="ar-prompt" BEFORE the user taps to place
+       the model. Instructs user to point at the floor and tap.
+       model-viewer shows this slot during the scanning phase.
+    ============================================================ */
+    .ar-placement-prompt {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 100px;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .ar-placement-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      background: rgba(8, 8, 14, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 18px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 22px 28px;
+      max-width: 300px;
+      text-align: center;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+    }
+
+    /* Animated scan ring - indicates active floor detection */
+    .ar-scan-ring {
+      position: relative;
+      width: 52px;
+      height: 52px;
+    }
+
+    .ar-scan-ring::before,
+    .ar-scan-ring::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+    }
+
+    .ar-scan-ring::before {
+      opacity: 0.7;
+      animation: scanPulse 1.8s ease-out infinite;
+    }
+
+    .ar-scan-ring::after {
+      opacity: 0.35;
+      animation: scanPulse 1.8s ease-out infinite 0.6s;
+    }
+
+    .ar-scan-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes scanPulse {
+      0%   { transform: scale(0.7); opacity: 0.7; }
+      100% { transform: scale(1.9); opacity: 0;   }
+    }
+
+    .ar-prompt-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      font-family: var(--font);
+    }
+
+    .ar-prompt-subtitle {
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.5;
+      font-family: var(--font);
+    }
+
+    /* ============================================================
        RESPONSIVE
     ============================================================ */
     @media (max-width: 480px) {
@@ -467,6 +564,7 @@
       .ar-overlay-panel   { bottom: 30px; gap: 8px; padding: 8px 14px; }
       .ar-ctrl-btn        { width: 46px; height: 46px; }
       .ctrl-icon          { font-size: 13px; }
+      .ar-placement-card  { padding: 18px 22px; max-width: 260px; }
     }
   </style>
 </head>
@@ -559,23 +657,35 @@
         style="--progress-bar-height:0px; --progress-bar-color:transparent;"
         alt="3D model of the Moderno sofa collection, floor-placed"
       >
-        <!-- ============================================================
-             AR OVERLAY PANEL
-             model-viewer renders this div as a WebXR DOM overlay
-             during the live camera session.
-             Only ONE functional button is included: Scale toggle.
-             Rotation and movement are handled natively by WebXR touch
-             gestures and cannot be locked/unlocked via model-viewer API.
-        ============================================================ -->
+        <!--
+          PLACEMENT PROMPT (slot="ar-prompt")
+          model-viewer displays this element during the FLOOR SCANNING
+          phase - before the user taps to place the model.
+          It is automatically hidden by model-viewer once the model
+          has been placed on a detected surface.
+        -->
+        <div slot="ar-prompt" class="ar-placement-prompt" id="ar-prompt-overlay">
+          <div class="ar-placement-card">
+            <div class="ar-scan-ring">
+              <div class="ar-scan-dot"></div>
+            </div>
+            <p class="ar-prompt-title">Point at your floor</p>
+            <p class="ar-prompt-subtitle">
+              Move your camera slowly toward the floor.<br />
+              When the sofa appears, tap to place it.
+            </p>
+          </div>
+        </div>
+
+        <!-- AR Controls Panel - shown after placement -->
         <div class="ar-overlay-panel" id="ar-controls-panel">
 
-          <!-- Scale Toggle: auto (default) vs fixed (real-world dimensions) -->
+          <!-- Scale Toggle: auto vs fixed real-world dimensions -->
           <button
             id="btn-size"
             class="ar-ctrl-btn status-on"
-            aria-label="Scale mode: auto - tap to switch to true dimensions"
+            aria-label="Scale: auto - tap to switch to true dimensions"
             aria-pressed="true"
-            title="Scale: auto sizing active"
           >
             <span class="ctrl-icon" aria-hidden="true">SZ</span>
             <span class="ctrl-label">Scale</span>
@@ -583,27 +693,25 @@
 
           <div class="ar-panel-divider" role="separator" aria-hidden="true"></div>
 
-          <!-- Floor Reset: repositions model back onto detected floor -->
+          <!-- Floor hint - tap to remind user they can reposition -->
           <button
             id="btn-floor"
             class="ar-ctrl-btn status-on"
-            aria-label="Floor mode: tap floor to reposition sofa"
+            aria-label="Tap any floor surface to reposition the sofa"
             aria-pressed="true"
-            title="Tap any floor surface to move the sofa"
           >
             <span class="ctrl-icon" aria-hidden="true">FL</span>
-            <span class="ctrl-label">Floor</span>
+            <span class="ctrl-label">Move</span>
           </button>
 
           <div class="ar-panel-divider" role="separator" aria-hidden="true"></div>
 
-          <!-- Shadow Toggle: shows or hides the floor drop shadow -->
+          <!-- Shadow toggle - genuine attribute change -->
           <button
             id="btn-shadow"
             class="ar-ctrl-btn status-on"
             aria-label="Shadow: on - tap to toggle floor shadow"
             aria-pressed="true"
-            title="Toggle floor shadow"
           >
             <span class="ctrl-icon" aria-hidden="true">SH</span>
             <span class="ctrl-label">Shadow</span>
@@ -611,7 +719,7 @@
 
         </div>
 
-        <!-- Status feedback bar - appears above the control panel -->
+        <!-- Status feedback bar -->
         <div
           class="ar-status-bar"
           id="ar-status-bar"
