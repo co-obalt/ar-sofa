@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sofa - View in Your Space | AR Product Viewer</title>
   <meta name="description" content="Experience the Moderno sofa in your own space using augmented reality. See true-to-life scale before you buy." />
@@ -169,15 +170,23 @@
 
     /* ============================================================
        MODEL VIEWER
-       Positioned out of viewport flow. The model loads silently
-       in the background. AR is triggered via .activateAR().
+       Must be full-viewport size so the internal WebGL canvas
+       initialises at native device resolution. If this element
+       is given a tiny size (e.g. 1px x 1px) the GL renderer
+       runs at that resolution and AR output is heavily pixelated.
+       We hide it visually with visibility:hidden + pointer-events:none
+       so it never appears on the product page, while the renderer
+       still runs at full quality in the background.
     ============================================================ */
     #sofa-viewer {
       position: fixed;
-      top: -9999px;
-      left: -9999px;
-      width: 1px;
-      height: 1px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      visibility: hidden;
+      pointer-events: none;
+      z-index: -1;
     }
 
     /* ============================================================
@@ -543,8 +552,11 @@
         shadow-intensity="1.2"
         shadow-softness="0.85"
         exposure="1"
+        tone-mapping="commerce"
+        interpolation-decay="200"
         camera-controls
         touch-action="pan-y"
+        style="--progress-bar-height:0px; --progress-bar-color:transparent;"
         alt="3D model of the Moderno sofa collection, floor-placed"
       >
         <!-- ============================================================
