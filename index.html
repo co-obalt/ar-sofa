@@ -3,15 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sofa - View in Your Space</title>
-  <meta name="description" content="Experience the sofa in your own space using augmented reality. Place it in any room before you buy." />
+  <title>Sofa - View in Your Space | AR Product Viewer</title>
+  <meta name="description" content="Experience the Moderno sofa in your own space using augmented reality. Place it in any room before you buy." />
 
-  <!-- Google Model Viewer - Official CDN -->
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Google Model Viewer - Official CDN v3.5.0 -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 
   <style>
     /* ============================================================
-       BASE RESET & ROOT VARIABLES
+       BASE RESET & CUSTOM PROPERTIES
     ============================================================ */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -20,71 +25,67 @@
     }
 
     :root {
-      --color-bg: #0a0a0f;
-      --color-surface: #111118;
-      --color-surface-raised: #16161f;
-      --color-border: rgba(255, 255, 255, 0.08);
-      --color-accent: #0070f3;
-      --color-accent-hover: #0059c8;
-      --color-text-primary: #f0f0f5;
-      --color-text-secondary: #8a8a9a;
-      --color-text-muted: #555565;
-      --color-control-bg: rgba(255, 255, 255, 0.92);
-      --color-control-shadow: rgba(0, 0, 0, 0.35);
-      --color-active: #0070f3;
-      --color-disabled-strike: #e53e3e;
-      --radius-button: 10px;
-      --transition-smooth: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-      --font-sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+      --bg:             #0a0a0f;
+      --surface:        #111118;
+      --surface-raised: #16161f;
+      --border:         rgba(255, 255, 255, 0.08);
+      --accent:         #0070f3;
+      --accent-hover:   #0059c8;
+      --accent-dim:     rgba(0, 112, 243, 0.12);
+      --accent-glow:    rgba(0, 112, 243, 0.35);
+      --text-primary:   #f0f0f5;
+      --text-secondary: #8a8a9a;
+      --text-muted:     #555565;
+      --ctrl-bg:        rgba(255, 255, 255, 0.92);
+      --ctrl-shadow:    rgba(0, 0, 0, 0.35);
+      --strike-red:     #e53e3e;
+      --radius:         10px;
+      --ease:           cubic-bezier(0.4, 0, 0.2, 1);
+      --font:           'Inter', 'Helvetica Neue', Arial, sans-serif;
     }
-
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
     html, body {
       height: 100%;
-      width: 100%;
-      background-color: var(--color-bg);
-      color: var(--color-text-primary);
-      font-family: var(--font-sans);
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font);
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
+    }
+
+    /* ============================================================
+       AMBIENT BACKGROUND
+    ============================================================ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 55% at 50% -5%,  rgba(0, 112, 243, 0.13) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 40% at 85% 110%, rgba(0, 112, 243, 0.07) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
     }
 
     /* ============================================================
        PAGE LAYOUT
     ============================================================ */
     .page-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 24px 20px;
-      position: relative;
-    }
-
-    .page-wrapper::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0, 112, 243, 0.12) 0%, transparent 65%),
-        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(0, 112, 243, 0.06) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ============================================================
-       PRODUCT CARD
-    ============================================================ */
-    .product-card {
       position: relative;
       z-index: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 40px;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .product-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 36px;
       width: 100%;
       max-width: 520px;
     }
@@ -96,33 +97,28 @@
       text-align: center;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      align-items: center;
+      gap: 14px;
     }
 
     .product-badge {
-      display: inline-block;
-      align-self: center;
       font-size: 10px;
       font-weight: 600;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.13em;
       text-transform: uppercase;
-      color: var(--color-accent);
-      background: rgba(0, 112, 243, 0.1);
-      border: 1px solid rgba(0, 112, 243, 0.25);
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid rgba(0, 112, 243, 0.28);
       border-radius: 20px;
       padding: 5px 14px;
     }
 
     .product-title {
-      font-size: clamp(28px, 6vw, 42px);
+      font-size: clamp(30px, 7vw, 44px);
       font-weight: 700;
       letter-spacing: -0.03em;
-      line-height: 1.1;
-      color: var(--color-text-primary);
-    }
-
-    .product-title span {
-      background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.6) 100%);
+      line-height: 1.08;
+      background: linear-gradient(135deg, #ffffff 10%, rgba(255,255,255,0.55) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -130,37 +126,34 @@
 
     .product-subtitle {
       font-size: 15px;
-      font-weight: 400;
-      color: var(--color-text-secondary);
-      line-height: 1.6;
-      max-width: 380px;
-      margin: 0 auto;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      max-width: 370px;
     }
 
     /* ============================================================
-       PRODUCT SPECS STRIP
+       SPECS STRIP
     ============================================================ */
     .product-specs {
       display: flex;
-      align-items: center;
-      background: var(--color-surface-raised);
-      border: 1px solid var(--color-border);
+      width: 100%;
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
       border-radius: 12px;
       overflow: hidden;
-      width: 100%;
     }
 
     .spec-item {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      padding: 16px 18px;
+      gap: 5px;
+      padding: 16px 12px;
       text-align: center;
     }
 
     .spec-item + .spec-item {
-      border-left: 1px solid var(--color-border);
+      border-left: 1px solid var(--border);
     }
 
     .spec-label {
@@ -168,89 +161,97 @@
       font-weight: 600;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--color-text-muted);
+      color: var(--text-muted);
     }
 
     .spec-value {
       font-size: 13px;
       font-weight: 500;
-      color: var(--color-text-primary);
+      color: var(--text-primary);
     }
 
     /* ============================================================
-       MODEL VIEWER - AR-ONLY (HIDDEN INLINE CANVAS)
+       MODEL VIEWER
+       Hidden from visual layout - acts as AR session controller.
+       The canvas is invisible; AR is triggered via .activateAR().
     ============================================================ */
-    model-viewer {
-      width: 0;
-      height: 0;
-      position: absolute;
+    #sofa-viewer {
+      position: fixed;
+      top: -9999px;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
       opacity: 0;
       pointer-events: none;
-      overflow: hidden;
     }
 
     /* ============================================================
-       AR LAUNCH BUTTON - slot="ar-button"
+       AR LAUNCH BUTTON - external, always visible on page
     ============================================================ */
-    .ar-launch-button {
+    #ar-launch-btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 14px;
       width: 100%;
       padding: 18px 32px;
-      background: var(--color-accent);
+      background: var(--accent);
       color: #ffffff;
-      font-family: var(--font-sans);
+      font-family: var(--font);
       font-size: 16px;
       font-weight: 600;
       letter-spacing: -0.01em;
       border: none;
-      border-radius: var(--radius-button);
+      border-radius: var(--radius);
       cursor: pointer;
-      box-shadow:
-        0 0 0 1px rgba(0, 112, 243, 0.4),
-        0 4px 16px rgba(0, 112, 243, 0.35),
-        0 1px 3px rgba(0, 0, 0, 0.4);
-      transition: var(--transition-smooth);
       position: relative;
       overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(0, 112, 243, 0.4),
+        0 4px 18px var(--accent-glow),
+        0 1px 3px rgba(0,0,0,0.4);
+      transition: background 0.22s var(--ease),
+                  box-shadow 0.22s var(--ease),
+                  transform 0.18s var(--ease);
     }
 
-    .ar-launch-button::before {
+    /* Shimmer sweep on hover */
+    #ar-launch-btn::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        105deg,
-        transparent 40%,
-        rgba(255, 255, 255, 0.15) 50%,
-        transparent 60%
-      );
+      background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.16) 50%, transparent 62%);
       transform: translateX(-100%);
-      transition: transform 0.5s ease;
+      transition: transform 0.55s ease;
     }
 
-    .ar-launch-button:hover::before {
-      transform: translateX(100%);
-    }
-
-    .ar-launch-button:hover {
-      background: var(--color-accent-hover);
+    #ar-launch-btn:hover::before  { transform: translateX(100%); }
+    #ar-launch-btn:hover {
+      background: var(--accent-hover);
       box-shadow:
-        0 0 0 1px rgba(0, 112, 243, 0.6),
-        0 8px 24px rgba(0, 112, 243, 0.45),
-        0 2px 6px rgba(0, 0, 0, 0.5);
-      transform: translateY(-1px);
+        0 0 0 1px rgba(0,112,243,0.55),
+        0 8px 28px rgba(0,112,243,0.48),
+        0 2px 6px rgba(0,0,0,0.5);
+      transform: translateY(-2px);
     }
-
-    .ar-launch-button:active {
+    #ar-launch-btn:active {
       transform: translateY(0);
       box-shadow:
-        0 0 0 1px rgba(0, 112, 243, 0.4),
-        0 2px 8px rgba(0, 112, 243, 0.3),
-        0 1px 2px rgba(0, 0, 0, 0.4);
+        0 0 0 1px rgba(0,112,243,0.35),
+        0 2px 10px rgba(0,112,243,0.28),
+        0 1px 2px rgba(0,0,0,0.4);
     }
+
+    /* Disabled state (non-AR device) */
+    #ar-launch-btn.btn-disabled {
+      background: #23232e;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    #ar-launch-btn.btn-disabled::before { display: none; }
 
     .btn-icon {
       width: 22px;
@@ -266,7 +267,7 @@
       height: 22px;
       fill: none;
       stroke: currentColor;
-      stroke-width: 1.8;
+      stroke-width: 1.75;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
@@ -275,39 +276,31 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 1px;
+      gap: 2px;
     }
 
-    .btn-primary-label {
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 1;
-    }
-
-    .btn-secondary-label {
-      font-size: 11px;
-      font-weight: 400;
-      opacity: 0.75;
-      line-height: 1;
-    }
+    .btn-primary-label   { font-size: 16px; font-weight: 600; line-height: 1; }
+    .btn-secondary-label { font-size: 11px; font-weight: 400; opacity: 0.72; line-height: 1; }
 
     /* ============================================================
-       COMPATIBILITY NOTE
+       COMPAT NOTE
     ============================================================ */
     .compat-note {
       text-align: center;
       font-size: 12px;
-      color: var(--color-text-muted);
-      line-height: 1.5;
+      color: var(--text-muted);
+      line-height: 1.6;
     }
 
     .compat-note strong {
-      color: var(--color-text-secondary);
+      color: var(--text-secondary);
       font-weight: 500;
     }
 
     /* ============================================================
-       AR OVERLAY PANEL - Bottom control dock (WebXR overlay)
+       AR OVERLAY PANEL
+       Rendered by model-viewer as a WebXR DOM overlay inside the
+       live camera session. Slotted into model-viewer.
     ============================================================ */
     .ar-overlay-panel {
       position: fixed;
@@ -315,18 +308,15 @@
       left: 50%;
       transform: translateX(-50%);
       display: flex;
-      flex-direction: row;
       align-items: center;
       gap: 14px;
       padding: 10px 16px;
-      background: rgba(10, 10, 15, 0.55);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(10, 10, 15, 0.58);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 60px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        0 2px 8px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.3);
       z-index: 9999;
       user-select: none;
     }
@@ -340,37 +330,26 @@
       height: 52px;
       border-radius: 50%;
       border: none;
-      background: var(--color-control-bg);
-      color: #111111;
+      background: var(--ctrl-bg);
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 2px;
-      box-shadow:
-        0 2px 12px var(--color-control-shadow),
-        0 1px 3px rgba(0, 0, 0, 0.2);
-      transition: var(--transition-smooth);
-      overflow: hidden;
       flex-shrink: 0;
+      overflow: hidden;
+      box-shadow: 0 2px 12px var(--ctrl-shadow), 0 1px 3px rgba(0,0,0,0.2);
+      transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
     }
 
-    .ar-ctrl-btn:hover {
-      transform: scale(1.06);
-      box-shadow:
-        0 4px 18px var(--color-control-shadow),
-        0 2px 6px rgba(0, 0, 0, 0.3);
-    }
-
-    .ar-ctrl-btn:active {
-      transform: scale(0.96);
-    }
+    .ar-ctrl-btn:hover  { transform: scale(1.07); box-shadow: 0 4px 18px var(--ctrl-shadow); }
+    .ar-ctrl-btn:active { transform: scale(0.95); }
 
     .ctrl-icon {
       font-size: 15px;
       font-weight: 700;
-      font-family: var(--font-sans);
+      font-family: var(--font);
       line-height: 1;
       color: #111111;
       letter-spacing: -0.02em;
@@ -385,25 +364,19 @@
       line-height: 1;
     }
 
-    /* Active / ON state */
+    /* Active ON state */
     .ar-ctrl-btn.status-on {
       background: #111118;
-      border: 1.5px solid var(--color-accent);
+      border: 1.5px solid var(--accent);
       box-shadow:
-        0 0 0 3px rgba(0, 112, 243, 0.2),
-        0 4px 16px rgba(0, 112, 243, 0.3),
-        0 2px 6px rgba(0, 0, 0, 0.3);
+        0 0 0 3px rgba(0,112,243,0.18),
+        0 4px 16px rgba(0,112,243,0.28),
+        0 2px 6px rgba(0,0,0,0.3);
     }
+    .ar-ctrl-btn.status-on .ctrl-icon  { color: #ffffff; }
+    .ar-ctrl-btn.status-on .ctrl-label { color: rgba(255,255,255,0.6); }
 
-    .ar-ctrl-btn.status-on .ctrl-icon {
-      color: #ffffff;
-    }
-
-    .ar-ctrl-btn.status-on .ctrl-label {
-      color: rgba(255, 255, 255, 0.65);
-    }
-
-    /* Disabled / OFF state - red diagonal strike-through via ::after pseudo-element */
+    /* Disabled OFF state - solid red diagonal strike via ::after pseudo-element */
     .ar-ctrl-btn.status-off::after {
       content: '';
       position: absolute;
@@ -411,83 +384,81 @@
       left: 8px;
       width: calc(100% - 16px);
       height: calc(100% - 16px);
-      background: none;
-      border-top: 2.5px solid var(--color-disabled-strike);
+      border-top: 2.5px solid var(--strike-red);
       transform: rotate(45deg);
-      transform-origin: center center;
+      transform-origin: center;
       border-radius: 2px;
       pointer-events: none;
       z-index: 10;
     }
 
-    /* Panel divider */
+    /* Divider */
     .ar-panel-divider {
       width: 1px;
       height: 30px;
-      background: rgba(255, 255, 255, 0.15);
-      flex-shrink: 0;
+      background: rgba(255,255,255,0.15);
       border-radius: 2px;
+      flex-shrink: 0;
     }
 
     /* ============================================================
-       STATUS BAR - above the control panel
+       AR STATUS BAR - floats above the control panel
     ============================================================ */
     .ar-status-bar {
       position: fixed;
-      bottom: 110px;
+      bottom: 112px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(10, 10, 15, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(10, 10, 15, 0.72);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 8px;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       padding: 8px 16px;
       font-size: 12px;
-      font-family: var(--font-sans);
+      font-family: var(--font);
       font-weight: 500;
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(255,255,255,0.82);
       letter-spacing: 0.02em;
       white-space: nowrap;
       z-index: 9998;
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.28s ease;
       pointer-events: none;
     }
 
-    .ar-status-bar.visible {
-      opacity: 1;
-    }
+    .ar-status-bar.visible { opacity: 1; }
 
     /* ============================================================
-       RESPONSIVE ADJUSTMENTS
+       RESPONSIVE
     ============================================================ */
     @media (max-width: 480px) {
-      .product-card { gap: 28px; }
-      .ar-overlay-panel { bottom: 28px; gap: 10px; padding: 8px 12px; }
-      .ar-ctrl-btn { width: 46px; height: 46px; }
-      .ctrl-icon { font-size: 13px; }
+      .product-card       { gap: 26px; }
+      .ar-overlay-panel   { bottom: 28px; gap: 10px; padding: 8px 12px; }
+      .ar-ctrl-btn        { width: 46px; height: 46px; }
+      .ctrl-icon          { font-size: 13px; }
     }
   </style>
 </head>
 <body>
 
+  <!-- ============================================================
+       PAGE
+  ============================================================ -->
   <main class="page-wrapper" role="main">
     <div class="product-card">
 
-      <!-- Product Header -->
+      <!-- Header -->
       <header class="product-header">
         <span class="product-badge">Augmented Reality</span>
-        <h1 class="product-title">
-          <span>Moderno</span><br />Sofa Collection
-        </h1>
+        <h1 class="product-title">Moderno Sofa<br />Collection</h1>
         <p class="product-subtitle">
           Place this sofa directly into your living space using AR.
           See true-to-life scale and proportion before you decide.
         </p>
       </header>
 
-      <!-- Product Specifications -->
+      <!-- Specs -->
       <div class="product-specs" aria-label="Product specifications">
         <div class="spec-item">
           <span class="spec-label">Width</span>
@@ -507,58 +478,58 @@
         </div>
       </div>
 
-      <!--
-        MODEL VIEWER COMPONENT
-        ar-only      : suppresses the inline 3D canvas on the product page
-        ar-modes     : webxr - activates WebXR AR session exclusively
-        ar-placement : floor - anchors model to detected floor surface
-        ar-scale     : fixed - locks authentic model dimensions on AR entry
-      -->
+      <!-- ============================================================
+           AR LAUNCH BUTTON
+           Lives on the product page, always visible.
+           Calls modelViewer.activateAR() on click.
+      ============================================================ -->
+      <button
+        id="ar-launch-btn"
+        aria-label="View sofa in your space using augmented reality"
+      >
+        <span class="btn-icon" aria-hidden="true">
+          <!-- AR camera icon: phone frame + scan-corner brackets -->
+          <svg viewBox="0 0 24 24">
+            <rect x="5" y="2" width="14" height="20" rx="2"/>
+            <circle cx="12" cy="18" r="1" fill="currentColor" stroke="none"/>
+            <path d="M2 9V6a1 1 0 0 1 1-1h3"  stroke-width="1.6"/>
+            <path d="M22 9V6a1 1 0 0 0-1-1h-3" stroke-width="1.6"/>
+            <path d="M2 15v3a1 1 0 0 0 1 1h3"  stroke-width="1.6"/>
+            <path d="M22 15v3a1 1 0 0 1-1 1h-3" stroke-width="1.6"/>
+          </svg>
+        </span>
+        <span class="btn-text-block">
+          <span class="btn-primary-label" id="btn-primary-label">View in Your Space</span>
+          <span class="btn-secondary-label" id="btn-secondary-label">Tap to place in AR</span>
+        </span>
+      </button>
+
+      <!-- ============================================================
+           MODEL VIEWER
+           Positioned off-screen; never renders a visible canvas.
+           AR is initiated programmatically via .activateAR().
+           The overlay panel slot is rendered inside the WebXR session.
+      ============================================================ -->
       <model-viewer
         id="sofa-viewer"
         src="sofa.glb"
         ar
         ar-modes="webxr"
-        ar-only
         ar-placement="floor"
         ar-scale="fixed"
         camera-controls
         touch-action="pan-y"
         alt="3D model of the Moderno sofa collection"
       >
-        <!-- AR Trigger Button slotted into model-viewer -->
-        <button
-          id="ar-trigger-btn"
-          slot="ar-button"
-          class="ar-launch-button"
-          aria-label="View sofa in your space using augmented reality"
-        >
-          <span class="btn-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="5" y="2" width="14" height="20" rx="2"/>
-              <circle cx="12" cy="18" r="1" fill="currentColor" stroke="none"/>
-              <path d="M2 9V6a1 1 0 0 1 1-1h3" stroke-width="1.6"/>
-              <path d="M22 9V6a1 1 0 0 0-1-1h-3" stroke-width="1.6"/>
-              <path d="M2 15v3a1 1 0 0 0 1 1h3" stroke-width="1.6"/>
-              <path d="M22 15v3a1 1 0 0 1-1 1h-3" stroke-width="1.6"/>
-            </svg>
-          </span>
-          <span class="btn-text-block">
-            <span class="btn-primary-label">View in Your Space</span>
-            <span class="btn-secondary-label">Requires ARCore or ARKit</span>
-          </span>
-        </button>
-
-        <!-- AR Overlay Control Panel - rendered as WebXR DOM overlay -->
+        <!-- AR overlay panel - rendered by model-viewer as a WebXR DOM overlay -->
         <div class="ar-overlay-panel" id="ar-controls-panel">
 
-          <!-- Button 1: Scale / Size Adjustment -->
+          <!-- Button 1: Scale toggle -->
           <button
             id="btn-size"
             class="ar-ctrl-btn status-off"
             aria-label="Toggle size adjustment - currently locked"
             aria-pressed="false"
-            title="Scale toggle - pinch to resize"
           >
             <span class="ctrl-icon" aria-hidden="true">SZ</span>
             <span class="ctrl-label">Scale</span>
@@ -566,13 +537,12 @@
 
           <div class="ar-panel-divider" role="separator" aria-hidden="true"></div>
 
-          <!-- Button 2: Rotation Control -->
+          <!-- Button 2: Rotation toggle -->
           <button
             id="btn-rotation"
             class="ar-ctrl-btn status-on"
             aria-label="Toggle rotation control - currently active"
             aria-pressed="true"
-            title="Rotation toggle - drag to rotate"
           >
             <span class="ctrl-icon" aria-hidden="true">RT</span>
             <span class="ctrl-label">Rotate</span>
@@ -580,13 +550,12 @@
 
           <div class="ar-panel-divider" role="separator" aria-hidden="true"></div>
 
-          <!-- Button 3: Movement / Translation Lock -->
+          <!-- Button 3: Movement toggle -->
           <button
             id="btn-move"
             class="ar-ctrl-btn status-on"
             aria-label="Toggle movement lock - currently active"
             aria-pressed="true"
-            title="Movement toggle - drag to reposition"
           >
             <span class="ctrl-icon" aria-hidden="true">MV</span>
             <span class="ctrl-label">Move</span>
@@ -594,7 +563,7 @@
 
         </div>
 
-        <!-- Status feedback bar above the control panel -->
+        <!-- Status feedback bar -->
         <div
           class="ar-status-bar"
           id="ar-status-bar"
@@ -605,10 +574,9 @@
 
       </model-viewer>
 
-      <!-- Compatibility note -->
+      <!-- Compat note -->
       <p class="compat-note">
-        <strong>AR requires</strong> an Android device with ARCore,
-        or an iOS device with ARKit support.<br />
+        <strong>AR requires</strong> Android with ARCore or iOS with ARKit.<br />
         Point your camera at a flat floor surface to begin placement.
       </p>
 
@@ -616,180 +584,153 @@
   </main>
 
 
+  <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
   <script>
     (function () {
       'use strict';
 
-      /* ----------------------------------------------------------
-         ELEMENT REFERENCES
-      ---------------------------------------------------------- */
-      var modelViewer  = document.getElementById('sofa-viewer');
-      var btnSize      = document.getElementById('btn-size');
-      var btnRotation  = document.getElementById('btn-rotation');
-      var btnMove      = document.getElementById('btn-move');
-      var statusBar    = document.getElementById('ar-status-bar');
+      /* ---- REFS ---- */
+      var modelViewer   = document.getElementById('sofa-viewer');
+      var launchBtn     = document.getElementById('ar-launch-btn');
+      var primaryLabel  = document.getElementById('btn-primary-label');
+      var secondaryLabel= document.getElementById('btn-secondary-label');
+      var btnSize       = document.getElementById('btn-size');
+      var btnRotation   = document.getElementById('btn-rotation');
+      var btnMove       = document.getElementById('btn-move');
+      var statusBar     = document.getElementById('ar-status-bar');
 
-      /* ----------------------------------------------------------
-         STATE OBJECT
-         sizeEnabled:     false - locked by default (ar-scale="fixed" is set)
-         rotationEnabled: true  - rotation active by default
-         moveEnabled:     true  - movement active by default
-      ---------------------------------------------------------- */
+      /* ---- STATE ---- */
       var state = {
-        sizeEnabled:     false,
+        arSupported:     true,
+        modelLoaded:     false,
+        sizeEnabled:     false,   // OFF by default - ar-scale="fixed" present
         rotationEnabled: true,
         moveEnabled:     true
       };
 
-      /* ----------------------------------------------------------
-         STATUS MESSAGE DISPLAY
-         Shows a brief feedback string above the control panel,
-         then fades after a delay.
-      ---------------------------------------------------------- */
+      /* ---- STATUS BAR ---- */
       var statusTimeout = null;
 
-      function showStatus(message) {
+      function showStatus(msg) {
         if (!statusBar) return;
-        statusBar.textContent = message;
+        statusBar.textContent = msg;
         statusBar.classList.add('visible');
         if (statusTimeout) clearTimeout(statusTimeout);
         statusTimeout = setTimeout(function () {
           statusBar.classList.remove('visible');
-        }, 2200);
+        }, 2400);
       }
 
-      /* ----------------------------------------------------------
-         APPLY VISUAL STATE TO BUTTON
-         Manages status-on / status-off CSS classes and aria attrs.
-      ---------------------------------------------------------- */
-      function applyButtonState(buttonEl, isActive, labelOn, labelOff) {
-        if (isActive) {
-          buttonEl.classList.remove('status-off');
-          buttonEl.classList.add('status-on');
-          buttonEl.setAttribute('aria-pressed', 'true');
-          if (labelOn) buttonEl.setAttribute('aria-label', labelOn);
-        } else {
-          buttonEl.classList.remove('status-on');
-          buttonEl.classList.add('status-off');
-          buttonEl.setAttribute('aria-pressed', 'false');
-          if (labelOff) buttonEl.setAttribute('aria-label', labelOff);
-        }
+      /* ---- BUTTON STATE ---- */
+      function applyButtonState(el, isOn, labelOn, labelOff) {
+        if (!el) return;
+        el.classList.toggle('status-on',  isOn);
+        el.classList.toggle('status-off', !isOn);
+        el.setAttribute('aria-pressed', String(isOn));
+        if (isOn  && labelOn)  el.setAttribute('aria-label', labelOn);
+        if (!isOn && labelOff) el.setAttribute('aria-label', labelOff);
       }
 
-      /* ----------------------------------------------------------
-         BUTTON 1: SIZE / SCALE TOGGLE
-         Default state is OFF - ar-scale="fixed" is present natively.
-         ON:  removes ar-scale attribute, allows free pinch-to-resize.
-         OFF: restores ar-scale="fixed", locks to authentic dimensions.
-      ---------------------------------------------------------- */
-      function handleSizeToggle() {
-        state.sizeEnabled = !state.sizeEnabled;
+      /* ---- MODEL VIEWER READINESS ---- */
+      function initModelViewer() {
+        if (!modelViewer) return;
 
-        if (state.sizeEnabled) {
-          modelViewer.removeAttribute('ar-scale');
-          showStatus('Scale: Unlocked - pinch to resize the model');
-        } else {
-          modelViewer.setAttribute('ar-scale', 'fixed');
-          showStatus('Scale: Locked - model displays at true dimensions');
-        }
+        /* Check if AR is available on this device */
+        modelViewer.addEventListener('ar-status', function onArStatus(e) {
+          var s = e.detail && e.detail.status;
 
-        applyButtonState(
-          btnSize,
-          state.sizeEnabled,
-          'Toggle size adjustment - currently unlocked',
-          'Toggle size adjustment - currently locked'
-        );
-      }
-
-      /* ----------------------------------------------------------
-         BUTTON 2: ROTATION CONTROL TOGGLE
-         Visual state management for orientation tracking.
-         Reflects user intent within browser WebXR runtime bounds.
-      ---------------------------------------------------------- */
-      function handleRotationToggle() {
-        state.rotationEnabled = !state.rotationEnabled;
-
-        if (state.rotationEnabled) {
-          showStatus('Rotation: Active - drag horizontally to rotate');
-        } else {
-          showStatus('Rotation: Locked - model orientation is fixed');
-        }
-
-        applyButtonState(
-          btnRotation,
-          state.rotationEnabled,
-          'Toggle rotation control - currently active',
-          'Toggle rotation control - currently locked'
-        );
-      }
-
-      /* ----------------------------------------------------------
-         BUTTON 3: MOVEMENT / TRANSLATION LOCK TOGGLE
-         Visual state management for drag-and-drop translation.
-         Reflects whether the model can be repositioned on the floor.
-      ---------------------------------------------------------- */
-      function handleMoveToggle() {
-        state.moveEnabled = !state.moveEnabled;
-
-        if (state.moveEnabled) {
-          showStatus('Movement: Active - drag to reposition the model');
-        } else {
-          showStatus('Movement: Locked - model position is anchored');
-        }
-
-        applyButtonState(
-          btnMove,
-          state.moveEnabled,
-          'Toggle movement lock - currently active',
-          'Toggle movement lock - currently anchored'
-        );
-      }
-
-      /* ----------------------------------------------------------
-         BIND CLICK LISTENERS
-      ---------------------------------------------------------- */
-      if (btnSize)     btnSize.addEventListener('click',     handleSizeToggle);
-      if (btnRotation) btnRotation.addEventListener('click', handleRotationToggle);
-      if (btnMove)     btnMove.addEventListener('click',     handleMoveToggle);
-
-      /* ----------------------------------------------------------
-         MODEL VIEWER AR SESSION EVENTS
-      ---------------------------------------------------------- */
-      if (modelViewer) {
-
-        modelViewer.addEventListener('ar-status', function (event) {
-          var status = event.detail && event.detail.status;
-
-          if (status === 'session-started') {
-            // AR camera live - re-sync button visual states
-            applyButtonState(btnSize,     state.sizeEnabled,     '', '');
-            applyButtonState(btnRotation, state.rotationEnabled, '', '');
-            applyButtonState(btnMove,     state.moveEnabled,     '', '');
-          }
-
-          if (status === 'not-presenting') {
-            // AR session ended - restore fixed scale if scale is locked
+          if (s === 'not-presenting') {
+            /* AR session ended normally - restore fixed scale if locked */
             if (!state.sizeEnabled) {
               modelViewer.setAttribute('ar-scale', 'fixed');
             }
           }
 
-          if (status === 'failed') {
-            // AR session failed - update button label for unsupported device
-            var arBtn = modelViewer.querySelector('[slot="ar-button"]');
-            if (arBtn) {
-              var primaryLabel   = arBtn.querySelector('.btn-primary-label');
-              var secondaryLabel = arBtn.querySelector('.btn-secondary-label');
-              if (primaryLabel)   primaryLabel.textContent   = 'AR Not Supported';
-              if (secondaryLabel) secondaryLabel.textContent = 'This device does not support WebXR AR';
-              arBtn.style.background = '#333344';
-              arBtn.style.cursor     = 'not-allowed';
-              arBtn.style.boxShadow  = 'none';
-            }
+          if (s === 'failed') {
+            /* AR not supported or user denied camera permission */
+            state.arSupported = false;
+            launchBtn.classList.add('btn-disabled');
+            launchBtn.setAttribute('disabled', 'true');
+            if (primaryLabel)   primaryLabel.textContent   = 'AR Not Available';
+            if (secondaryLabel) secondaryLabel.textContent = 'Your device does not support WebXR AR';
           }
         });
 
+        /* Model loaded */
+        modelViewer.addEventListener('load', function () {
+          state.modelLoaded = true;
+          if (secondaryLabel && state.arSupported) {
+            secondaryLabel.textContent = 'Tap to place in AR';
+          }
+        });
       }
+
+      /* ---- AR LAUNCH BUTTON ---- */
+      if (launchBtn) {
+        launchBtn.addEventListener('click', function () {
+          if (!state.arSupported) return;
+          if (!modelViewer) return;
+
+          /* Trigger AR session programmatically */
+          modelViewer.activateAR();
+        });
+      }
+
+      /* ---- SCALE TOGGLE ---- */
+      if (btnSize) {
+        btnSize.addEventListener('click', function () {
+          state.sizeEnabled = !state.sizeEnabled;
+          if (state.sizeEnabled) {
+            modelViewer.removeAttribute('ar-scale');
+            showStatus('Scale: Unlocked - pinch to resize the model');
+          } else {
+            modelViewer.setAttribute('ar-scale', 'fixed');
+            showStatus('Scale: Locked - model displays at true dimensions');
+          }
+          applyButtonState(
+            btnSize, state.sizeEnabled,
+            'Toggle size adjustment - currently unlocked',
+            'Toggle size adjustment - currently locked'
+          );
+        });
+      }
+
+      /* ---- ROTATION TOGGLE ---- */
+      if (btnRotation) {
+        btnRotation.addEventListener('click', function () {
+          state.rotationEnabled = !state.rotationEnabled;
+          showStatus(state.rotationEnabled
+            ? 'Rotation: Active - drag to rotate'
+            : 'Rotation: Locked - orientation is fixed'
+          );
+          applyButtonState(
+            btnRotation, state.rotationEnabled,
+            'Toggle rotation control - currently active',
+            'Toggle rotation control - currently locked'
+          );
+        });
+      }
+
+      /* ---- MOVEMENT TOGGLE ---- */
+      if (btnMove) {
+        btnMove.addEventListener('click', function () {
+          state.moveEnabled = !state.moveEnabled;
+          showStatus(state.moveEnabled
+            ? 'Movement: Active - drag to reposition'
+            : 'Movement: Locked - position is anchored'
+          );
+          applyButtonState(
+            btnMove, state.moveEnabled,
+            'Toggle movement lock - currently active',
+            'Toggle movement lock - currently anchored'
+          );
+        });
+      }
+
+      /* ---- INIT ---- */
+      initModelViewer();
 
     })();
   </script>
