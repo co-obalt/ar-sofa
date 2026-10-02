@@ -1,75 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="color-scheme" content="dark" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moderno Sofa - High Quality AR Product Viewer</title>
-  <meta name="description" content="Experience the Moderno sofa in your own space using high-resolution augmented reality. True-to-life scale and crisp 3D visualization." />
+  <title>Moderno Luxury Sofa — 3D & WebAR Experience</title>
+  <meta name="description"
+    content="Experience the Moderno luxury sofa in your space using true-to-scale augmented reality. Customize fabric colors in 3D." />
 
+  <!-- Premium Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
 
-  <!-- Google Model Viewer 3.5.0 - Official CDN -->
+  <!-- Google Model Viewer 3.5.0 CDN -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 
   <style>
     /* ============================================================
-       RESET & CUSTOM PROPERTIES
+       WHITE LUXURY DESIGN SYSTEM
     ============================================================ */
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
     :root {
-      --bg:             #08080c;
-      --surface:        #11111a;
-      --surface-raised: #161624;
-      --border:         rgba(255, 255, 255, 0.1);
-      --border-bright:  rgba(0, 112, 243, 0.4);
-      --accent:         #0070f3;
-      --accent-hover:   #0059c8;
-      --accent-dim:     rgba(0, 112, 243, 0.14);
-      --accent-glow:    rgba(0, 112, 243, 0.45);
-      --text-primary:   #f5f5fa;
-      --text-secondary: #9090a6;
-      --text-muted:     #5a5a6e;
-      --ctrl-bg:        rgba(255, 255, 255, 0.94);
-      --ctrl-shadow:    rgba(0, 0, 0, 0.45);
-      --strike-red:     #e53e3e;
-      --radius-lg:      20px;
-      --radius-md:      12px;
-      --ease:           cubic-bezier(0.4, 0, 0.2, 1);
-      --font:           'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --surface-subtle: #f4f4f6;
+      --border: #e5e7eb;
+      --border-dark: #d1d5db;
+      --primary: #111827;
+      --primary-hover: #1f2937;
+      --accent: #b38b46;
+      --accent-light: #fcf8f2;
+      --accent-border: #e6c88f;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --radius-lg: 24px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.08);
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    html, body {
-      height: 100%;
+    html,
+    body {
+      min-height: 100%;
       background-color: var(--bg);
-      color: var(--text-primary);
+      color: var(--text-main);
       font-family: var(--font);
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
     }
 
-    /* Ambient background glow */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 70% 45% at 50% -5%,  rgba(0, 112, 243, 0.18) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 40% at 85% 105%, rgba(0, 112, 243, 0.08) 0%, transparent 65%);
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(179, 139, 70, 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 85% 90%, rgba(15, 23, 42, 0.03) 0%, transparent 60%);
       pointer-events: none;
       z-index: 0;
     }
 
-    /* ============================================================
-       PAGE LAYOUT
-    ============================================================ */
     .page-wrapper {
       position: relative;
       z-index: 1;
@@ -78,407 +81,119 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      padding: 36px 20px;
+      padding: 40px 20px;
     }
 
     .product-card {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 28px;
+      gap: 24px;
       width: 100%;
-      max-width: 580px;
+      max-width: 560px;
     }
 
-    /* ============================================================
-       PRODUCT HEADER
-    ============================================================ */
     .product-header {
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .product-badge {
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 20px;
+      color: var(--accent);
+      background: var(--accent-light);
+      border: 1px solid var(--accent-border);
+      border-radius: 30px;
       padding: 5px 14px;
     }
 
+    .brand-pill svg {
+      width: 13px;
+      height: 13px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
     .product-title {
-      font-size: clamp(30px, 6vw, 42px);
+      font-size: clamp(28px, 5.5vw, 38px);
       font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      background: linear-gradient(135deg, #ffffff 20%, rgba(255, 255, 255, 0.6) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      letter-spacing: -0.025em;
+      color: var(--primary);
+      line-height: 1.15;
     }
 
     .product-subtitle {
       font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      max-width: 420px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      max-width: 440px;
     }
 
-    /* ============================================================
-       INTERACTIVE 3D VIEW CONTAINER
-       Proper size & display allows WebGL to render at native device
-       resolution (dpr: auto, render-scale: 1) without pixelation.
-    ============================================================ */
     .viewer-container {
       position: relative;
       width: 100%;
-      height: 380px;
-      background: radial-gradient(circle at 50% 60%, var(--surface-raised) 0%, var(--surface) 100%);
+      height: 390px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       overflow: hidden;
-      box-shadow:
-        0 20px 40px rgba(0, 0, 0, 0.6),
-        inset 0 1px 1px rgba(255, 255, 255, 0.1);
-      transition: border-color 0.3s var(--ease);
+      box-shadow: var(--shadow-md);
+      transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
     }
 
     .viewer-container:hover {
-      border-color: var(--border-bright);
+      border-color: var(--border-dark);
+      box-shadow: var(--shadow-lg);
     }
 
     #sofa-viewer {
       width: 100%;
       height: 100%;
       --poster-color: transparent;
-      --progress-bar-height: 0px;
-      --progress-bar-color: transparent;
+      --progress-bar-height: 2px;
+      --progress-bar-color: var(--accent);
     }
 
-    /* 3D Interaction Badge */
     .viewer-hint {
       position: absolute;
       top: 14px;
       right: 14px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
       font-size: 11px;
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.7);
-      background: rgba(10, 10, 16, 0.65);
+      font-weight: 600;
+      color: var(--primary);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 6px 13px;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 20px;
-      padding: 5px 12px;
+      box-shadow: var(--shadow-sm);
       pointer-events: none;
       z-index: 2;
     }
 
     .viewer-hint svg {
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       fill: none;
-      stroke: currentColor;
+      stroke: var(--accent);
       stroke-width: 2;
     }
 
-    /* ============================================================
-       SPECS STRIP
-    ============================================================ */
-    .product-specs {
-      display: flex;
-      width: 100%;
-      background: var(--surface-raised);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-    }
-
-    .spec-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      padding: 14px 8px;
-      text-align: center;
-    }
-
-    .spec-item + .spec-item {
-      border-left: 1px solid var(--border);
-    }
-
-    .spec-label {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    .spec-value {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    /* ============================================================
-       AR LAUNCH BUTTON - triggers native AR / WebXR session
-    ============================================================ */
-    #ar-launch-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      width: 100%;
-      padding: 18px 32px;
-      background: linear-gradient(135deg, #0070f3 0%, #0051ba 100%);
-      color: #ffffff;
-      font-family: var(--font);
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      border: none;
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      box-shadow:
-        0 0 0 1px rgba(0, 112, 243, 0.4),
-        0 8px 24px var(--accent-glow),
-        0 2px 4px rgba(0, 0, 0, 0.4);
-      transition:
-        background    0.22s var(--ease),
-        box-shadow    0.22s var(--ease),
-        transform     0.18s var(--ease);
-    }
-
-    /* Shimmer effect */
-    #ar-launch-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        105deg,
-        transparent 38%,
-        rgba(255, 255, 255, 0.22) 50%,
-        transparent 62%
-      );
-      transform: translateX(-110%);
-      transition: transform 0.6s ease;
-      pointer-events: none;
-    }
-
-    #ar-launch-btn:hover::before { transform: translateX(110%); }
-
-    #ar-launch-btn:hover {
-      background: linear-gradient(135deg, #007cf8 0%, #0059c8 100%);
-      box-shadow:
-        0 0 0 1px rgba(0, 112, 243, 0.6),
-        0 12px 36px rgba(0, 112, 243, 0.55),
-        0 4px 8px rgba(0, 0, 0, 0.5);
-      transform: translateY(-2px);
-    }
-
-    #ar-launch-btn:active {
-      transform: translateY(0);
-      box-shadow:
-        0 0 0 1px rgba(0, 112, 243, 0.35),
-        0 4px 12px rgba(0, 112, 243, 0.3);
-    }
-
-    #ar-launch-btn:disabled,
-    #ar-launch-btn.btn-disabled {
-      background: #1c1c28;
-      cursor: not-allowed;
-      box-shadow: none;
-      transform: none;
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-    }
-
-    #ar-launch-btn:disabled::before,
-    #ar-launch-btn.btn-disabled::before { display: none; }
-
-    .btn-icon {
-      width: 24px;
-      height: 24px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .btn-icon svg {
-      width: 24px;
-      height: 24px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 1.8;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .btn-text-block {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 3px;
-    }
-
-    .btn-primary-label   { font-size: 16px; font-weight: 600; line-height: 1.1; }
-    .btn-secondary-label { font-size: 11px; font-weight: 400; opacity: 0.8; line-height: 1; }
-
-    /* ============================================================
-       COMPATIBILITY NOTE
-    ============================================================ */
-    .compat-note {
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-
-    .compat-note strong { color: var(--text-secondary); font-weight: 500; }
-
-    /* ============================================================
-       AR DOM OVERLAY PANEL (WebXR Mode)
-    ============================================================ */
-    .ar-overlay-panel {
-      position: fixed;
-      bottom: 36px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 18px;
-      background: rgba(8, 8, 14, 0.72);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 60px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow:
-        0 10px 40px rgba(0, 0, 0, 0.5),
-        0 2px 8px rgba(0, 0, 0, 0.35);
-      z-index: 9999;
-      user-select: none;
-      white-space: nowrap;
-    }
-
-    .ar-ctrl-btn {
-      position: relative;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: 1.5px solid transparent;
-      background: var(--ctrl-bg);
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      flex-shrink: 0;
-      box-shadow: 0 2px 14px var(--ctrl-shadow);
-      transition:
-        transform     0.18s var(--ease),
-        box-shadow    0.18s var(--ease),
-        background    0.18s var(--ease),
-        border-color  0.18s var(--ease);
-    }
-
-    .ar-ctrl-btn:hover  { transform: scale(1.08); box-shadow: 0 4px 20px var(--ctrl-shadow); }
-    .ar-ctrl-btn:active { transform: scale(0.93); }
-
-    .ctrl-icon {
-      font-size: 14px;
-      font-weight: 700;
-      font-family: var(--font);
-      line-height: 1;
-      color: #111111;
-      letter-spacing: -0.02em;
-      position: relative;
-      z-index: 2;
-    }
-
-    .ctrl-label {
-      font-size: 7px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: #44445a;
-      line-height: 1;
-      position: relative;
-      z-index: 2;
-    }
-
-    .ar-ctrl-btn.status-on {
-      background: #0f0f1a;
-      border-color: var(--accent);
-      box-shadow:
-        0 0 0 3px rgba(0, 112, 243, 0.25),
-        0 4px 18px rgba(0, 112, 243, 0.35);
-    }
-
-    .ar-ctrl-btn.status-on .ctrl-icon  { color: #ffffff; }
-    .ar-ctrl-btn.status-on .ctrl-label { color: rgba(255, 255, 255, 0.6); }
-
-    .ar-ctrl-btn.status-off::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 2px;
-      height: 58%;
-      background: var(--strike-red);
-      border-radius: 2px;
-      transform: translate(-50%, -50%) rotate(45deg);
-      pointer-events: none;
-      z-index: 5;
-    }
-
-    .ar-panel-divider {
-      width: 1px;
-      height: 28px;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 2px;
-      flex-shrink: 0;
-    }
-
-    .ar-status-bar {
-      position: fixed;
-      bottom: 104px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(8, 8, 14, 0.82);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 8px;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      padding: 8px 18px;
-      font-size: 12px;
-      font-family: var(--font);
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.9);
-      white-space: nowrap;
-      z-index: 9998;
-      opacity: 0;
-      transition: opacity 0.28s ease;
-      pointer-events: none;
-    }
-
-    .ar-status-bar.visible { opacity: 1; }
-
-    /* Placement Prompt Slot */
+    /* AR Placement Prompt Overlay */
     .ar-placement-prompt {
       position: fixed;
       top: 0;
@@ -498,81 +213,318 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
-      background: rgba(8, 8, 14, 0.76);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 18px;
+      gap: 10px;
+      background: rgba(17, 24, 39, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      padding: 20px 26px;
-      max-width: 300px;
+      padding: 18px 24px;
+      max-width: 320px;
       text-align: center;
-      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
       pointer-events: none;
     }
 
     .ar-scan-ring {
       position: relative;
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
     }
 
-    .ar-scan-ring::before,
-    .ar-scan-ring::after {
+    .ar-scan-ring::before {
       content: '';
       position: absolute;
       inset: 0;
       border-radius: 50%;
       border: 2px solid var(--accent);
-    }
-
-    .ar-scan-ring::before {
-      opacity: 0.7;
       animation: scanPulse 1.8s ease-out infinite;
-    }
-
-    .ar-scan-ring::after {
-      opacity: 0.35;
-      animation: scanPulse 1.8s ease-out infinite 0.6s;
     }
 
     .ar-scan-dot {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: var(--accent);
       transform: translate(-50%, -50%);
     }
 
     @keyframes scanPulse {
-      0%   { transform: scale(0.7); opacity: 0.7; }
-      100% { transform: scale(1.9); opacity: 0;   }
+      0% {
+        transform: scale(0.7);
+        opacity: 0.8;
+      }
+
+      100% {
+        transform: scale(1.8);
+        opacity: 0;
+      }
     }
 
     .ar-prompt-title {
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 700;
       color: #ffffff;
       line-height: 1.2;
     }
 
     .ar-prompt-subtitle {
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 1.45;
+    }
+
+    /* Fabric Customizer Card */
+    .color-customizer-card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .customizer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .customizer-title-block {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .customizer-title-block svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 2;
+    }
+
+    .customizer-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: -0.01em;
+    }
+
+    .selected-color-name {
       font-size: 12px;
-      color: rgba(255, 255, 255, 0.65);
-      line-height: 1.5;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .color-options-grid {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .color-swatch-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.2s var(--ease), border-color 0.2s var(--ease);
+    }
+
+    .color-swatch-btn:hover {
+      transform: scale(1.12);
+    }
+
+    .color-swatch-btn.active {
+      border-color: var(--primary);
+    }
+
+    .color-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.4);
+    }
+
+    /* Product Specs Strip */
+    .product-specs {
+      display: flex;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .spec-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding: 12px 8px;
+      text-align: center;
+    }
+
+    .spec-item+.spec-item {
+      border-left: 1px solid var(--border);
+    }
+
+    .spec-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .spec-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* AR Launch Button */
+    #ar-launch-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      padding: 16px 28px;
+      background: var(--primary);
+      color: #ffffff;
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(17, 24, 39, 0.15);
+      transition: background 0.2s var(--ease), transform 0.18s var(--ease), box-shadow 0.2s var(--ease);
+    }
+
+    #ar-launch-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(17, 24, 39, 0.22);
+    }
+
+    #ar-launch-btn:active {
+      transform: translateY(0);
+    }
+
+    #ar-launch-btn.btn-disabled {
+      background: var(--surface-subtle);
+      color: var(--text-light);
+      border: 1px solid var(--border);
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-icon-svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .btn-text-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .btn-primary-label {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .btn-secondary-label {
+      font-size: 11px;
+      font-weight: 500;
+      opacity: 0.75;
+      line-height: 1;
+    }
+
+    /* Trust Badge */
+    .trust-badge-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+    }
+
+    .trust-badge-card svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 2;
+      flex-shrink: 0;
+    }
+
+    .trust-badge-text {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .trust-badge-text strong {
+      color: var(--primary);
+      font-weight: 600;
     }
 
     @media (max-width: 480px) {
-      .product-card { gap: 22px; }
-      .viewer-container { height: 320px; }
-      .ar-overlay-panel { bottom: 24px; gap: 8px; padding: 8px 14px; }
-      .ar-ctrl-btn { width: 44px; height: 44px; }
+      .product-card {
+        gap: 20px;
+      }
+
+      .viewer-container {
+        height: 330px;
+      }
+
+      .color-options-grid {
+        gap: 8px;
+      }
+
+      .color-swatch-btn {
+        width: 34px;
+        height: 34px;
+      }
+
+      .color-dot {
+        width: 24px;
+        height: 24px;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <main class="page-wrapper" role="main">
@@ -580,96 +532,72 @@
 
       <!-- Header -->
       <header class="product-header">
-        <span class="product-badge">Ultra-HD AR Viewer</span>
-        <h1 class="product-title">Moderno Sofa<br />Collection</h1>
+        <div class="brand-pill">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+            <line x1="12" y1="22.08" x2="12" y2="12" />
+          </svg>
+          WebAR 1:1 Scale
+        </div>
+        <h1 class="product-title">Moderno Luxury Sofa</h1>
         <p class="product-subtitle">
-          Inspect in 3D below or tap the button to place the sofa into your living room with true-to-life scale & crisp detail.
+          Switch fabric colors below in real 3D or place the sofa inside your room with true-to-life dimensions & 3D
+          mesh details.
         </p>
       </header>
 
-      <!-- 3D Interactive Viewer Frame -->
+      <!-- 3D Interactive Canvas -->
       <div class="viewer-container">
         <div class="viewer-hint">
-          <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/><path d="M12 8v8M8 12h8"/></svg>
-          Drag to rotate
+          <svg viewBox="0 0 24 24">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+          </svg>
+          Rotate 3D
         </div>
 
-        <!--
-          MODEL VIEWER CONFIGURATION FOR MAXIMUM AR QUALITY:
-          1. ar-modes="scene-viewer quick-look webxr"
-             - scene-viewer: Launches Google Scene Viewer on Android (native 4K ARCore renderer)
-             - quick-look: Launches Apple Quick Look on iOS (native ARKit renderer)
-             - webxr: Fallback in-browser WebXR session
-          2. render-scale="1" & minimum-render-scale="1":
-             - Prevents downscaling of WebGL viewport canvas
-          3. power-preference="high-performance":
-             - Ensures maximum GPU hardware performance
-          4. tone-mapping="commerce" & exposure="1":
-             - Crisp, true-to-life material colors
-        -->
-        <model-viewer
-          id="sofa-viewer"
-          src="sofa.glb"
-          ar
-          ar-modes="scene-viewer quick-look webxr"
-          ar-scale="fixed"
-          ar-placement="floor"
-          render-scale="1"
-          minimum-render-scale="1"
-          power-preference="high-performance"
-          camera-controls
-          touch-action="pan-y"
-          auto-rotate
-          auto-rotate-delay="3000"
-          rotation-per-second="20deg"
-          shadow-intensity="1.4"
-          shadow-softness="0.5"
-          exposure="1.05"
-          tone-mapping="commerce"
-          interpolation-decay="200"
-          alt="3D model of Moderno Sofa"
-        >
+        <model-viewer id="sofa-viewer" src="sofa.glb" ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto"
+          ar-placement="floor" loading="eager" camera-controls touch-action="pan-y" auto-rotate field-of-view="25deg"
+          shadow-intensity="1.0" shadow-softness="0.5" exposure="1.0" tone-mapping="commerce"
+          alt="3D model of Moderno Sofa">
           <!-- AR Floor Scan Prompt -->
-          <div slot="ar-prompt" class="ar-placement-prompt" id="ar-prompt-overlay">
+          <div slot="ar-prompt" class="ar-placement-prompt">
             <div class="ar-placement-card">
               <div class="ar-scan-ring">
                 <div class="ar-scan-dot"></div>
               </div>
-              <p class="ar-prompt-title">Point at your floor</p>
+              <p class="ar-prompt-title">Point camera at your floor</p>
               <p class="ar-prompt-subtitle">
-                Move your camera slowly toward the floor.<br />
-                When the sofa appears, tap to place it.
+                Slowly tilt your phone toward the floor to place the sofa at 2 meters distance.
               </p>
             </div>
           </div>
-
-          <!-- AR In-Session Controls -->
-          <div class="ar-overlay-panel" id="ar-controls-panel">
-            <button id="btn-size" class="ar-ctrl-btn status-on" aria-label="Scale mode toggle" aria-pressed="true">
-              <span class="ctrl-icon">SZ</span>
-              <span class="ctrl-label">Scale</span>
-            </button>
-
-            <div class="ar-panel-divider" role="separator"></div>
-
-            <button id="btn-floor" class="ar-ctrl-btn status-on" aria-label="Move placement hint">
-              <span class="ctrl-icon">FL</span>
-              <span class="ctrl-label">Move</span>
-            </button>
-
-            <div class="ar-panel-divider" role="separator"></div>
-
-            <button id="btn-shadow" class="ar-ctrl-btn status-on" aria-label="Shadow toggle" aria-pressed="true">
-              <span class="ctrl-icon">SH</span>
-              <span class="ctrl-label">Shadow</span>
-            </button>
-          </div>
-
-          <div class="ar-status-bar" id="ar-status-bar" role="status"></div>
         </model-viewer>
       </div>
 
-      <!-- Specs Strip -->
+      <!-- Color / Fabric Customizer Panel -->
+      <div class="color-customizer-card">
+        <div class="customizer-header">
+          <div class="customizer-title-block">
+            <svg viewBox="0 0 24 24">
+              <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+              <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+              <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+              <path
+                d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10c1.38 0 2.5-1.12 2.5-2.5 0-.61-.23-1.16-.64-1.57-.4-.4-.64-.96-.64-1.57 0-1.24 1.01-2.25 2.25-2.25H17c2.76 0 5-2.24 5-5 0-4.97-4.49-9-10-9z" />
+            </svg>
+            <span class="customizer-title">Fabric Customizer</span>
+          </div>
+          <span class="selected-color-name" id="selected-color-name">Warm Cream (Original)</span>
+        </div>
+
+        <div class="color-options-grid" id="color-options-container">
+          <!-- Swatches loaded via JS -->
+        </div>
+      </div>
+
+      <!-- Specs -->
       <div class="product-specs">
         <div class="spec-item">
           <span class="spec-label">Width</span>
@@ -689,29 +617,30 @@
         </div>
       </div>
 
-      <!-- AR Launch Button -->
+      <!-- AR Button -->
       <button id="ar-launch-btn" aria-label="View sofa in your space using augmented reality">
-        <span class="btn-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <rect x="5" y="2" width="14" height="20" rx="2"/>
-            <circle cx="12" cy="18" r="1" fill="currentColor" stroke="none"/>
-            <path d="M2 9V6a1 1 0 0 1 1-1h3"/>
-            <path d="M22 9V6a1 1 0 0 0-1-1h-3"/>
-            <path d="M2 15v3a1 1 0 0 0 1 1h3"/>
-            <path d="M22 15v3a1 1 0 0 1-1 1h-3"/>
-          </svg>
-        </span>
-        <span class="btn-text-block">
-          <span class="btn-primary-label" id="btn-primary-label">View in Your Space</span>
-          <span class="btn-secondary-label" id="btn-secondary-label">Open camera to place in AR</span>
-        </span>
+        <svg class="btn-icon-svg" viewBox="0 0 24 24">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+          <circle cx="12" cy="13" r="4" />
+        </svg>
+        <div class="btn-text-block">
+          <span class="btn-primary-label" id="btn-primary-label">View In Your Space</span>
+          <span class="btn-secondary-label" id="btn-secondary-label">Open camera to place sofa in 3D AR</span>
+        </div>
       </button>
 
-      <!-- Compat Note -->
-      <p class="compat-note">
-        <strong>AR requires</strong> Android (ARCore / Scene Viewer) or iOS (ARKit / Quick Look).<br />
-        Point your camera at a flat floor surface once camera opens.
-      </p>
+      <!-- Trust Badge -->
+      <div class="trust-badge-card">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <rect x="9" y="11" width="6" height="4" rx="1" />
+          <path d="M10 11V9a2 2 0 0 1 4 0v2" />
+        </svg>
+        <div class="trust-badge-text">
+          <strong>100% Safe & Private WebAR:</strong> Runs temporarily in your browser memory. No app download or video
+          storage required.
+        </div>
+      </div>
 
     </div>
   </main>
@@ -720,113 +649,114 @@
     (function () {
       'use strict';
 
-      var viewer         = document.getElementById('sofa-viewer');
-      var launchBtn      = document.getElementById('ar-launch-btn');
-      var primaryLabel   = document.getElementById('btn-primary-label');
+      var viewer = document.getElementById('sofa-viewer');
+      var launchBtn = document.getElementById('ar-launch-btn');
+      var primaryLabel = document.getElementById('btn-primary-label');
       var secondaryLabel = document.getElementById('btn-secondary-label');
-      var btnSize        = document.getElementById('btn-size');
-      var btnFloor       = document.getElementById('btn-floor');
-      var btnShadow      = document.getElementById('btn-shadow');
-      var statusBar      = document.getElementById('ar-status-bar');
+      var colorNameEl = document.getElementById('selected-color-name');
+      var colorContainer = document.getElementById('color-options-container');
 
-      var state = {
-        arSupported:   true,
-        scaleFixed:    true,
-        shadowEnabled: true
-      };
+      // Favored Color Options
+      var colorPalettes = [
+        {
+          name: 'Warm Cream (Original)',
+          hex: '#E4D5BE',
+          rgba: [1.0, 1.0, 1.0, 1.0]
+        },
+        {
+          name: 'Emerald Velvet',
+          hex: '#2D5A47',
+          rgba: [0.176, 0.353, 0.278, 1.0]
+        },
+        {
+          name: 'Midnight Navy',
+          hex: '#1E293B',
+          rgba: [0.118, 0.161, 0.231, 1.0]
+        },
 
-      var statusTimer = null;
-      function showStatus(msg) {
-        if (!statusBar) return;
-        statusBar.textContent = msg;
-        statusBar.classList.add('visible');
-        if (statusTimer) clearTimeout(statusTimer);
-        statusTimer = setTimeout(function () {
-          statusBar.classList.remove('visible');
-        }, 2600);
+        {
+          name: 'Charcoal Gray',
+          hex: '#374151',
+          rgba: [0.216, 0.255, 0.318, 1.0]
+        }
+      ];
+
+      function renderColorSwatches() {
+        if (!colorContainer) return;
+        colorContainer.innerHTML = '';
+
+        colorPalettes.forEach(function (palette, index) {
+          var btn = document.createElement('button');
+          btn.className = 'color-swatch-btn' + (index === 0 ? ' active' : '');
+          btn.setAttribute('aria-label', 'Select color ' + palette.name);
+          btn.setAttribute('title', palette.name);
+
+          var dot = document.createElement('div');
+          dot.className = 'color-dot';
+          dot.style.backgroundColor = palette.hex;
+
+          btn.appendChild(dot);
+
+          btn.addEventListener('click', function () {
+            var allBtns = colorContainer.querySelectorAll('.color-swatch-btn');
+            allBtns.forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+
+            if (colorNameEl) {
+              colorNameEl.textContent = palette.name;
+            }
+
+            applyMaterialColor(palette.rgba);
+          });
+
+          colorContainer.appendChild(btn);
+        });
       }
 
-      function setButtonState(el, isOn, labelOn, labelOff) {
-        if (!el) return;
-        el.classList.toggle('status-on',  isOn);
-        el.classList.toggle('status-off', !isOn);
-        el.setAttribute('aria-pressed', String(isOn));
-        el.setAttribute('aria-label', isOn ? labelOn : labelOff);
+      function applyMaterialColor(rgba) {
+        if (!viewer || !viewer.model) return;
+        try {
+          var materials = viewer.model.materials;
+          if (materials && materials.length > 0) {
+            materials.forEach(function (mat) {
+              if (mat.pbrMetallicRoughness) {
+                mat.pbrMetallicRoughness.setBaseColorFactor(rgba);
+              }
+            });
+          }
+        } catch (err) {
+          console.warn('Material update error:', err);
+        }
       }
 
+      // Handle AR Launch
       if (launchBtn) {
         launchBtn.addEventListener('click', function () {
-          if (!state.arSupported || !viewer) return;
-          viewer.activateAR();
-        });
-      }
-
-      if (btnSize) {
-        btnSize.addEventListener('click', function () {
-          state.scaleFixed = !state.scaleFixed;
-          if (state.scaleFixed) {
-            viewer.setAttribute('ar-scale', 'fixed');
-            showStatus('Scale: Fixed - 100% true dimensions');
-          } else {
-            viewer.setAttribute('ar-scale', 'auto');
-            showStatus('Scale: Auto - smart floor fit');
+          if (viewer && typeof viewer.activateAR === 'function') {
+            viewer.activateAR();
           }
-          setButtonState(
-            btnSize,
-            !state.scaleFixed,
-            'Scale: Auto - tap to switch to true dimensions',
-            'Scale: Fixed - tap to switch to auto scale'
-          );
-        });
-      }
-
-      if (btnFloor) {
-        btnFloor.addEventListener('click', function () {
-          showStatus('Tap any floor surface to reposition the sofa');
-        });
-      }
-
-      if (btnShadow) {
-        btnShadow.addEventListener('click', function () {
-          state.shadowEnabled = !state.shadowEnabled;
-          if (state.shadowEnabled) {
-            viewer.setAttribute('shadow-intensity', '1.4');
-            showStatus('Shadow: On');
-          } else {
-            viewer.setAttribute('shadow-intensity', '0');
-            showStatus('Shadow: Off');
-          }
-          setButtonState(
-            btnShadow,
-            state.shadowEnabled,
-            'Shadow: On - tap to hide shadow',
-            'Shadow: Off - tap to show shadow'
-          );
         });
       }
 
       if (viewer) {
         viewer.addEventListener('load', function () {
-          if (secondaryLabel && state.arSupported) {
-            secondaryLabel.textContent = 'Open camera to place in AR';
-          }
+          renderColorSwatches();
         });
 
         viewer.addEventListener('ar-status', function (e) {
           var s = e.detail && e.detail.status;
           if (s === 'failed') {
-            state.arSupported = false;
-            if (launchBtn) {
-              launchBtn.classList.add('btn-disabled');
-              launchBtn.setAttribute('disabled', 'true');
-            }
-            if (primaryLabel)   primaryLabel.textContent   = 'AR Not Supported';
-            if (secondaryLabel) secondaryLabel.textContent = 'Use a mobile device with ARCore or ARKit';
+            if (launchBtn) launchBtn.classList.add('btn-disabled');
+            if (primaryLabel) primaryLabel.textContent = 'AR Not Supported';
+            if (secondaryLabel) secondaryLabel.textContent = 'Use a mobile browser with ARCore / ARKit';
           }
         });
       }
+
+      renderColorSwatches();
     })();
   </script>
 
 </body>
+
 </html>
