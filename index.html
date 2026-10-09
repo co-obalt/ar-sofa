@@ -717,6 +717,67 @@
       transform: translateX(-50%) translateY(0);
       opacity: 1;
     }
+
+    /* AR Status Feedback Toast */
+    .ar-status-toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(17, 24, 39, 0.92);
+      color: #ffffff;
+      padding: 14px 24px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      z-index: 10001;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s var(--ease);
+      max-width: 340px;
+      text-align: center;
+    }
+
+    .ar-status-toast.visible {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .ar-status-toast .toast-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .ar-status-toast.success {
+      background: rgba(16, 120, 60, 0.92);
+      border-color: rgba(52, 211, 153, 0.3);
+    }
+
+    .ar-status-toast .toast-pulse {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      animation: statusPulse 1.2s ease-in-out infinite;
+    }
+
+    .ar-status-toast.success .toast-pulse {
+      background: #34d399;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
   </style>
 </head>
 
@@ -752,9 +813,12 @@
           Rotate 3D
         </div>
 
-        <model-viewer id="sofa-viewer" src="sofa.glb" ios-src="sofa.usdz" ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto"
-          ar-placement="floor" loading="eager" camera-controls touch-action="pan-y" auto-rotate field-of-view="25deg"
-          shadow-intensity="1.0" shadow-softness="0.5" exposure="1.0" tone-mapping="commerce"
+        <model-viewer id="sofa-viewer" src="sofa.glb" ios-src="sofa.usdz" ar ar-modes="webxr scene-viewer quick-look"
+          ar-scale="fixed" ar-placement="floor" xr-environment
+          loading="eager" camera-controls touch-action="none" auto-rotate
+          field-of-view="25deg" camera-target="0m 0.44m 0m"
+          min-camera-orbit="auto 45deg auto" max-camera-orbit="auto 90deg auto"
+          shadow-intensity="1.2" shadow-softness="0.8" exposure="1.0" tone-mapping="commerce"
           alt="3D model of Moderno Sofa">
           <!-- AR Floor Scan Prompt -->
           <div slot="ar-prompt" class="ar-placement-prompt">
@@ -889,6 +953,12 @@
       <circle cx="12" cy="13" r="4" />
     </svg>
     <span>Launching 3D AR Camera...</span>
+  </div>
+
+  <!-- AR Status Feedback Toast -->
+  <div id="ar-status-toast" class="ar-status-toast">
+    <div class="toast-pulse"></div>
+    <span id="ar-status-message">Scanning your floor...</span>
   </div>
 
   <script>
@@ -1069,6 +1139,31 @@
         }
       }
 
+      // AR Status toast helpers
+      var arStatusToast = document.getElementById('ar-status-toast');
+      var arStatusMessage = document.getElementById('ar-status-message');
+      var arStatusTimer = null;
+
+      function showARStatus(message, isSuccess, duration) {
+        if (!arStatusToast || !arStatusMessage) return;
+        arStatusMessage.textContent = message;
+        arStatusToast.classList.remove('success');
+        if (isSuccess) arStatusToast.classList.add('success');
+        arStatusToast.classList.add('visible');
+
+        if (arStatusTimer) clearTimeout(arStatusTimer);
+        if (duration) {
+          arStatusTimer = setTimeout(function () {
+            arStatusToast.classList.remove('visible');
+          }, duration);
+        }
+      }
+
+      function hideARStatus() {
+        if (arStatusToast) arStatusToast.classList.remove('visible');
+        if (arStatusTimer) clearTimeout(arStatusTimer);
+      }
+
       if (viewer) {
         viewer.addEventListener('load', function () {
           renderColorSwatches();
@@ -1076,10 +1171,21 @@
 
         viewer.addEventListener('ar-status', function (e) {
           var s = e.detail && e.detail.status;
-          if (s === 'failed' && isMobile) {
-            if (launchBtn) launchBtn.classList.add('btn-disabled');
-            if (primaryLabel) primaryLabel.textContent = 'AR Not Supported';
-            if (secondaryLabel) secondaryLabel.textContent = 'Use a mobile browser with ARCore / ARKit';
+          console.log('[AR Status]', s);
+
+          if (s === 'session-started') {
+            showARStatus('📱 Point camera at the floor and move slowly...', false);
+          } else if (s === 'object-placed') {
+            showARStatus('✅ Sofa placed! Pinch to adjust position.', true, 4000);
+          } else if (s === 'not-presenting') {
+            hideARStatus();
+          } else if (s === 'failed') {
+            hideARStatus();
+            if (isMobile) {
+              if (launchBtn) launchBtn.classList.add('btn-disabled');
+              if (primaryLabel) primaryLabel.textContent = 'AR Not Supported';
+              if (secondaryLabel) secondaryLabel.textContent = 'Use a mobile browser with ARCore / ARKit';
+            }
           }
         });
       }
