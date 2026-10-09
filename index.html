@@ -195,18 +195,22 @@
 
     /* AR Placement Prompt Overlay */
     .ar-placement-prompt {
+      display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-end;
       padding-bottom: 90px;
       pointer-events: none;
       z-index: 9999;
+    }
+
+    model-viewer[ar-status="session-started"] .ar-placement-prompt {
+      display: flex;
     }
 
     .ar-placement-card {
@@ -813,13 +817,29 @@
           Rotate 3D
         </div>
 
-        <model-viewer id="sofa-viewer" src="sofa.glb" ios-src="sofa.usdz" ar ar-modes="webxr scene-viewer quick-look"
-          ar-scale="fixed" ar-placement="floor" xr-environment
-          loading="eager" camera-controls touch-action="none" auto-rotate
-          field-of-view="25deg" camera-target="0m 0.44m 0m"
-          min-camera-orbit="auto 45deg auto" max-camera-orbit="auto 90deg auto"
-          shadow-intensity="1.2" shadow-softness="0.8" exposure="1.0" tone-mapping="commerce"
-          alt="3D model of Moderno Sofa">
+        <model-viewer id="sofa-viewer"
+          src="sofa.glb"
+          ios-src="sofa.usdz#allowsContentScaling=0"
+          ar
+          ar-modes="scene-viewer webxr quick-look"
+          ar-scale="fixed"
+          ar-placement="floor"
+          xr-environment
+          loading="eager"
+          camera-controls
+          touch-action="pan-y"
+          field-of-view="30deg"
+          camera-target="0m 0.44m 0m"
+          camera-orbit="0deg 75deg 3.5m"
+          min-camera-orbit="auto 20deg auto"
+          max-camera-orbit="auto 90deg auto"
+          min-field-of-view="20deg"
+          max-field-of-view="45deg"
+          shadow-intensity="1.2"
+          shadow-softness="0.8"
+          exposure="1.0"
+          tone-mapping="commerce"
+          alt="3D model of Moderno Luxury Sofa">
           <!-- AR Floor Scan Prompt -->
           <div slot="ar-prompt" class="ar-placement-prompt">
             <div class="ar-placement-card">
@@ -828,7 +848,7 @@
               </div>
               <p class="ar-prompt-title">Point camera at your floor</p>
               <p class="ar-prompt-subtitle">
-                Slowly tilt your phone toward the floor to place the sofa at 2 meters distance.
+                Slowly tilt your phone toward the floor to place the sofa.
               </p>
             </div>
           </div>
@@ -978,7 +998,7 @@
       var autoToast = document.getElementById('ar-auto-toast');
 
       // Device detection
-      var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
       // Favored Color Options
       var colorPalettes = [
@@ -1004,13 +1024,15 @@
         }
       ];
 
+      var activeColorIndex = 0;
+
       function renderColorSwatches() {
         if (!colorContainer) return;
         colorContainer.innerHTML = '';
 
         colorPalettes.forEach(function (palette, index) {
           var btn = document.createElement('button');
-          btn.className = 'color-swatch-btn' + (index === 0 ? ' active' : '');
+          btn.className = 'color-swatch-btn' + (index === activeColorIndex ? ' active' : '');
           btn.setAttribute('aria-label', 'Select color ' + palette.name);
           btn.setAttribute('title', palette.name);
 
@@ -1021,6 +1043,7 @@
           btn.appendChild(dot);
 
           btn.addEventListener('click', function () {
+            activeColorIndex = index;
             var allBtns = colorContainer.querySelectorAll('.color-swatch-btn');
             allBtns.forEach(function (b) { b.classList.remove('active'); });
             btn.classList.add('active');
@@ -1053,7 +1076,12 @@
       }
 
       // Generate target QR URL for direct mobile camera launch
-      var arTargetUrl = window.location.href.split('?')[0] + '?launchAR=true';
+      var currentHost = window.location.hostname;
+      var targetHost = (currentHost === 'localhost' || currentHost === '127.0.0.1') ? '192.168.2.94' : currentHost;
+      var portStr = window.location.port ? (':' + window.location.port) : '';
+      var basePath = window.location.pathname || '/';
+      var arTargetUrl = (window.location.protocol === 'file:' ? 'http://192.168.2.94:3000/' : (window.location.protocol + '//' + targetHost + portStr + basePath)) + '?launchAR=true';
+
       if (qrImg) {
         var primaryQrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(arTargetUrl);
         qrImg.src = primaryQrUrl;
@@ -1167,6 +1195,9 @@
       if (viewer) {
         viewer.addEventListener('load', function () {
           renderColorSwatches();
+          if (activeColorIndex !== 0) {
+            applyMaterialColor(colorPalettes[activeColorIndex].rgba);
+          }
         });
 
         viewer.addEventListener('ar-status', function (e) {
@@ -1176,7 +1207,7 @@
           if (s === 'session-started') {
             showARStatus('📱 Point camera at the floor and move slowly...', false);
           } else if (s === 'object-placed') {
-            showARStatus('✅ Sofa placed! Pinch to adjust position.', true, 4000);
+            showARStatus('✅ Sofa placed on floor! Drag to reposition.', true, 4000);
           } else if (s === 'not-presenting') {
             hideARStatus();
           } else if (s === 'failed') {
